@@ -41,6 +41,18 @@ function calculate() {
             }
             result = b / a;
             break;
+        case "^2":
+            result = a * a;
+            break;
+        case "^3":
+            result = a * a * a;
+            break;
+        case "SqRt":
+            result = Math.sqrt(a);
+            break;
+        case "CuRt":
+            result = Math.cbrt(a);
+            break;
         default:
             return;
     }
@@ -57,3 +69,4 @@ function clearDisplay() {
     operator = '';
     document.getElementById('display').value = '';
 }
+
