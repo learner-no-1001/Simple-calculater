@@ -2,27 +2,41 @@ let inputA = '';
 let operator = '';
 let inputB = '';
 
+// Append numbers to current input
 function appendNumber(number) {
     inputA += number;
-    document.getElementById('display').value = `${inputB} ${operator} ${inputA}`;
+    updateDisplay();
 }
 
+// Append operations
 function appendOperation(op) {
-    if (inputA === '') return;
-    if (inputB !== '') {
-        calculate(); 
+    if (inputA === '' && inputB === '') return;
+
+    // Unary operations: calculate immediately
+    if (op === '^2' || op === '^3' || op === 'SqRt' || op === 'CuRt') {
+        operator = op;
+        calculate();
+        return;
     }
+
+    // If there is already a previous input, calculate first
+    if (inputB !== '' && inputA !== '') {
+        calculate();
+    }
+
     operator = op;
     inputB = inputA;
     inputA = '';
-    document.getElementById('display').value = `${inputB} ${operator}`;
+    updateDisplay();
 }
 
+// Perform calculation
 function calculate() {
-    if (inputB === '' || inputA === '') return;
+    if (operator === '' || (inputB === '' && operator !== '^2' && operator !== '^3' && operator !== 'SqRt' && operator !== 'CuRt')) return;
+
     let result;
     let b = parseFloat(inputB);
-    let a = parseFloat(inputA);
+    let a = parseFloat(inputA || inputB); // For unary operations, use inputB if inputA is empty
 
     switch (operator) {
         case '+':
@@ -37,6 +51,7 @@ function calculate() {
         case '/':
             if (a === 0) {
                 document.getElementById("display").value = "ERROR";
+                clearDisplay();
                 return;
             }
             result = b / a;
@@ -57,16 +72,29 @@ function calculate() {
             return;
     }
 
+    // Save result for next operation
     inputA = result.toString();
     operator = '';
     inputB = '';
-    document.getElementById('display').value = inputA;
+    updateDisplay();
 }
 
+// Clear all inputs
 function clearDisplay() {
     inputA = '';
     inputB = '';
     operator = '';
-    document.getElementById('display').value = '';
+    updateDisplay();
 }
+
+// Update the calculator display
+function updateDisplay() {
+    const display = document.getElementById('display');
+    if (operator) {
+        display.value = `${inputB} ${operator} ${inputA}`;
+    } else {
+        display.value = inputA;
+    }
+}
+
 
