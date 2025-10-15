@@ -2,7 +2,7 @@ let inputA = '';
 let operator = '';
 let inputB = '';
 
-// Append numbers to current input
+// Append numbers
 function appendNumber(number) {
     inputA += number;
     updateDisplay();
@@ -10,16 +10,31 @@ function appendNumber(number) {
 
 // Append operations
 function appendOperation(op) {
-    if (inputA === '' && inputB === '') return;
+    if (inputA === '' && op !== '^2' && op !== '^3' && op !== 'SqRt' && op !== 'CuRt') return;
 
-    // Unary operations: calculate immediately
-    if (op === '^2' || op === '^3' || op === 'SqRt' || op === 'CuRt') {
-        operator = op;
-        calculate();
+    // Unary operations: calculate immediately using inputA
+    if (op === '^2') {
+        inputA = (parseFloat(inputA) ** 2).toString();
+        updateDisplay();
+        return;
+    }
+    if (op === '^3') {
+        inputA = (parseFloat(inputA) ** 3).toString();
+        updateDisplay();
+        return;
+    }
+    if (op === 'SqRt') {
+        inputA = (Math.sqrt(parseFloat(inputA))).toString();
+        updateDisplay();
+        return;
+    }
+    if (op === 'CuRt') {
+        inputA = (Math.cbrt(parseFloat(inputA))).toString();
+        updateDisplay();
         return;
     }
 
-    // If there is already a previous input, calculate first
+    // For binary operations
     if (inputB !== '' && inputA !== '') {
         calculate();
     }
@@ -30,13 +45,13 @@ function appendOperation(op) {
     updateDisplay();
 }
 
-// Perform calculation
+// Perform calculation for binary operations
 function calculate() {
-    if (operator === '' || (inputB === '' && operator !== '^2' && operator !== '^3' && operator !== 'SqRt' && operator !== 'CuRt')) return;
+    if (inputB === '' || inputA === '' || operator === '') return;
 
-    let result;
+    let a = parseFloat(inputA);
     let b = parseFloat(inputB);
-    let a = parseFloat(inputA || inputB); // For unary operations, use inputB if inputA is empty
+    let result;
 
     switch (operator) {
         case '+':
@@ -56,30 +71,17 @@ function calculate() {
             }
             result = b / a;
             break;
-        case "^2":
-            result = a * a;
-            break;
-        case "^3":
-            result = a * a * a;
-            break;
-        case "SqRt":
-            result = Math.sqrt(a);
-            break;
-        case "CuRt":
-            result = Math.cbrt(a);
-            break;
         default:
             return;
     }
 
-    // Save result for next operation
     inputA = result.toString();
     operator = '';
     inputB = '';
     updateDisplay();
 }
 
-// Clear all inputs
+// Clear display
 function clearDisplay() {
     inputA = '';
     inputB = '';
@@ -87,7 +89,7 @@ function clearDisplay() {
     updateDisplay();
 }
 
-// Update the calculator display
+// Update calculator display
 function updateDisplay() {
     const display = document.getElementById('display');
     if (operator) {
@@ -96,5 +98,3 @@ function updateDisplay() {
         display.value = inputA;
     }
 }
-
-
